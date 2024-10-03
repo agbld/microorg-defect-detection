@@ -1,7 +1,9 @@
 *.pt
 runs/
+models/
 yolo_dataset/
 data/vis_images
+screenlog.0
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

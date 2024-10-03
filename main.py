@@ -14,12 +14,12 @@ val_name = f"val_{timestamp}"
 # Train the YOLOv8 model
 def train_model():
     # Load the YOLOv8 model
-    model = YOLO('yolo11x.pt')
+    model = YOLO('./models/yolo11x.pt')
 
     # Train the model
     model.train(
         data=DATA_CONFIG_PATH,   # Pointing to the data.yaml file
-        epochs=50,               # Number of training epochs
+        epochs=500,               # Number of training epochs
         imgsz=320,               # Image size
         batch=16,                # Batch size
         name=train_name,           # Custom run name
