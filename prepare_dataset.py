@@ -4,6 +4,8 @@ import shutil
 import random
 from collections import defaultdict
 import argparse
+import matplotlib.pyplot as plt
+import numpy as np
 
 # Define the command line arguments
 parser = argparse.ArgumentParser(description='Prepare a dataset for YOLOv5 training')
@@ -20,9 +22,7 @@ IMAGES_DIR = args.images_dir
 YOLO_DIR = os.path.abspath(args.yolo_dir)
 
 TRAIN_RATIO = args.train_ratio  # Percentage of data to use for training
-
-# Specify the classes you want to include (by their names)
-INCLUDED_CLASSES = args.included_classes
+INCLUDED_CLASSES = args.included_classes  # Classes to include in the dataset
 
 # If the YOLO dataset directory already exists, delete it
 if os.path.exists(YOLO_DIR):
@@ -63,33 +63,19 @@ for image_id, categories in image_id_to_categories.items():
 
 # Function for stratified splitting at image level
 def stratified_split(image_list, train_ratio):
-    # Collect all unique class indices
     all_classes = set()
     for item in image_list:
         all_classes.update(item['categories'])
     all_classes = list(all_classes)
+
+    train_images, val_images = [], []
     
-    # Initialize train and val lists
-    train_images = []
-    val_images = []
-    
-    # Create a mapping from class index to images containing that class
-    class_to_images = defaultdict(list)
-    for item in image_list:
-        for class_idx in item['categories']:
-            class_to_images[class_idx].append(item)
-    
-    # Shuffle the images for randomness
     random.shuffle(image_list)
     
-    # Assign images to train or val sets
-    class_counts = defaultdict(int)
     for item in image_list:
-        # Calculate current distribution
         train_class_counts = {cls: sum([cls in img['categories'] for img in train_images]) for cls in all_classes}
         val_class_counts = {cls: sum([cls in img['categories'] for img in val_images]) for cls in all_classes}
         
-        # Decide where to put the image to balance the class distributions
         place_in_train = True
         for cls in item['categories']:
             if train_class_counts[cls] / max(1, train_class_counts[cls] + val_class_counts[cls]) > train_ratio:
@@ -122,31 +108,24 @@ def save_yolo_annotations(image_set, subset):
         image_name = image_info['file_name']
         image_width = image_info['width']
         image_height = image_info['height']
-        
-        # Get all annotations for this image
+
         annos = [anno for anno in filtered_annotations if anno['image_id'] == item['image_id']]
-        
-        # Skip images without annotations (after filtering)
         if not annos:
             continue
         
-        # Create label file
         label_file_path = f'{YOLO_DIR}/{subset}/labels/{os.path.splitext(image_name)[0]}.txt'
         with open(label_file_path, 'w') as label_file:
             for anno in annos:
-                category_id = category_id_to_index[anno['category_id']]  # Adjusted class index
+                category_id = category_id_to_index[anno['category_id']]
                 yolo_bbox = convert_bbox_coco_to_yolo(image_width, image_height, anno['bbox'])
                 label_file.write(f"{category_id} " + " ".join(map(str, yolo_bbox)) + "\n")
         
-        # Copy corresponding image to YOLO folder
         src_image_path = os.path.join(IMAGES_DIR, image_name)
         dst_image_path = f'{YOLO_DIR}/{subset}/images/{image_name}'
         shutil.copyfile(src_image_path, dst_image_path)
 
-# Save training annotations
+# Save training and validation annotations
 save_yolo_annotations(train_images, 'train')
-
-# Save validation annotations
 save_yolo_annotations(val_images, 'val')
 
 # Create the data.yaml file for YOLOv8
@@ -158,14 +137,76 @@ val: {YOLO_DIR}/val/images
 nc: {len(included_categories)}  # Number of classes
 names: {[category['name'] for category in included_categories]}  # Class names
 """
-
     yaml_path = os.path.join(YOLO_DIR, 'data.yaml')
     with open(yaml_path, 'w') as yaml_file:
         yaml_file.write(yaml_content)
-    
     print(f"data.yaml created at {yaml_path}")
 
 # Create data.yaml
 create_yaml_file()
+
+# Dataset inspection: Create class distribution plot and save it
+def parse_yolo_annotations(label_dir):
+    class_counts = defaultdict(int)
+    for label_file in os.listdir(label_dir):
+        if label_file.endswith('.txt'):
+            with open(os.path.join(label_dir, label_file), 'r') as f:
+                for line in f.readlines():
+                    class_id = int(line.strip().split()[0])
+                    class_counts[class_id] += 1
+    return class_counts
+
+def inspect_dataset():
+    stats = {}
+
+    train_labels_dir = f'{YOLO_DIR}/train/labels'
+    train_class_counts = parse_yolo_annotations(train_labels_dir)
+    stats['train'] = {'class_counts': train_class_counts}
+
+    val_labels_dir = f'{YOLO_DIR}/val/labels'
+    val_class_counts = parse_yolo_annotations(val_labels_dir)
+    stats['val'] = {'class_counts': val_class_counts}
+
+    display_class_distribution(stats)
+
+# Function to display and save class distributions
+def display_class_distribution(stats):
+    classes = list(set(list(stats['train']['class_counts'].keys()) + list(stats['val']['class_counts'].keys())))
+    classes.sort()
+
+    train_counts = [stats['train']['class_counts'].get(cls, 0) for cls in classes]
+    val_counts = [stats['val']['class_counts'].get(cls, 0) for cls in classes]
+
+    class_names = [coco_data['categories'][cls]['name'] for cls in classes]
+
+    fig, ax = plt.subplots()
+    index = np.arange(len(classes))
+    bar_width = 0.35
+
+    bar1 = ax.bar(index, train_counts, bar_width, label='Train')
+    bar2 = ax.bar(index + bar_width, val_counts, bar_width, label='Validation')
+
+    for rect in bar1:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width() / 2., height, '%d' % int(height), ha='center', va='bottom')
+
+    for rect in bar2:
+        height = rect.get_height()
+        ax.text(rect.get_x() + rect.get_width() / 2., height, '%d' % int(height), ha='center', va='bottom')
+
+    ax.set_xlabel('Class Name')
+    ax.set_ylabel('Count')
+    ax.set_title('Class Distribution in Train and Validation Sets')
+    ax.set_xticks(index + bar_width / 2)
+    ax.set_xticklabels(class_names, rotation=45, ha='right')
+    ax.legend()
+
+    plt.tight_layout()
+    plot_path = os.path.join(YOLO_DIR, 'class_distribution.png')
+    plt.savefig(plot_path)
+    print(f"Class distribution plot saved at {plot_path}")
+
+# Run dataset inspection
+inspect_dataset()
 
 print("Dataset preparation complete!")
