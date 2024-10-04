@@ -1,46 +1,55 @@
-# YOLOv8 Custom Object Detection
+# LED Defects Detection
 
-This project focuses on preparing a custom object detection dataset in YOLO format and training a YOLOv8 model. The dataset is originally in COCO format, and we convert it into YOLO format for training.
+This repository contains scripts to prepare datasets and train YOLO models for detecting defects in LEDs. The dataset preparation is tailored for YOLO family training, and training/testing is performed using the YOLO framework.
 
-## Project Structure
-- `prepare_dataset.py`: Converts COCO annotations to YOLO format and splits the dataset into training and validation sets.
-- `main.py`: Handles training and evaluation of the YOLOv8 model.
-- `data/`: Contains the original images and annotations in COCO format.
-- `yolo_dataset/`: Generated YOLO dataset and annotations.
+## Setup
 
-## Prerequisites
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/agbld/led-defects-detection.git
+   cd led-defects-detection
+   ```
 
-- Python 3.x
-- Install the required dependencies:
-  ```bash
-  pip install ultralytics
-  ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
 ## Dataset Preparation
 
-To prepare the dataset in YOLO format, run the following command:
+Use `prepare_dataset.py` to prepare a dataset in YOLO format from a COCO JSON file.
+
+### Example Usage
+
+* Prepare a dataset for all classes:
+  ```bash
+  python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8
+  ```
+
+* Prepare a dataset for specific classes:
+  ```bash
+  python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes led particle flip Particle_Big marked
+  ```
+
+Arguments:
+- `--coco_json`: Path to COCO format JSON.
+- `--images_dir`: Directory containing images.
+- `--yolo_dir`: Directory to save YOLO formatted dataset.
+- `--train_ratio`: Ratio for train-validation split (default: 0.8).
+- `--included_classes`: Classes to include (default: `['led', 'particle', 'flip', ...]`).
+
+## Model Training and Evaluation
+
+Use `main.py` to train and evaluate the YOLO model.
+
+### Example Usage
 ```bash
-python prepare_dataset.py
+python main.py --data_config ./yolo_dataset/data.yaml --model yolo11x --epochs 50 --batch_size 16 --run_name experiment1
 ```
 
-This will:
-- Convert the COCO annotations to YOLO format.
-- Split the dataset into training and validation sets (default split is 80% for training).
-- Create the necessary folders and save images and annotations in the YOLO format.
-- Generate the `data.yaml` file required for YOLOv8 training.
-
-## Training the YOLOv8 Model
-
-To train the YOLOv8 model, run the following command:
-```bash
-python main.py
-```
-
-This will:
-- Load the YOLOv8 model (`yolo11n.pt`).
-- Train the model for 50 epochs using the prepared dataset.
-- Save the best weights to `runs/detect/{run_name}/weights/best.pt`.
-
-## Validation
-
-Once training is complete, the model will automatically run validation using the best weights from training. The results will be printed to the console, including the mAP (mean Average Precision).
+Arguments:
+- `--data_config`: Path to the dataset config YAML.
+- `--model`: YOLO model type (default: `yolo11x`).
+- `--epochs`: Number of training epochs (default: 50).
+- `--batch_size`: Training batch size (default: 16).
+- `--run_name`: Custom run name.
