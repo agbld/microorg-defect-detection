@@ -3,6 +3,7 @@ runs/
 models/
 yolo_dataset/
 data/vis_images
+data/.tmp
 screenlog.0
 
 # Byte-compiled / optimized / DLL files
