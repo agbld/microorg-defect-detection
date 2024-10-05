@@ -5,6 +5,7 @@ yolo_dataset/
 data/vis_images
 data/.tmp
 screenlog.0
+runs_report.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
