@@ -64,13 +64,17 @@ with PdfPages(args.output_file) as pdf:
     # Generate summary table of best performances
     summary_data = []
     for model_name, df in data_frames.items():
-        best_epoch = df['       metrics/mAP50(B)'].idxmax()
+        # Calculate the mean of all metrics for each epoch
+        df['mean_metric'] = df[['   metrics/precision(B)', '      metrics/recall(B)', '       metrics/mAP50(B)', '    metrics/mAP50-95(B)']].mean(axis=1)
+        
+        # Choose the epoch with the highest mean metric
+        best_epoch = df['mean_metric'].idxmax()
         best_metrics = df.loc[best_epoch, ['   metrics/precision(B)', '      metrics/recall(B)', '       metrics/mAP50(B)', '    metrics/mAP50-95(B)']]
         summary_data.append({
             'Model': model_name,
             'Best Epoch': int(df.loc[best_epoch, '                  epoch']),
-            'Best mAP50': best_metrics['   metrics/precision(B)'],
-            'Best mAP50-95': best_metrics['      metrics/recall(B)'],
+            'mAP50': best_metrics['   metrics/precision(B)'],
+            'mAP50-95': best_metrics['      metrics/recall(B)'],
             'Precision': best_metrics['       metrics/mAP50(B)'],
             'Recall': best_metrics['    metrics/mAP50-95(B)'],
         })
