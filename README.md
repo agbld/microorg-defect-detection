@@ -98,6 +98,21 @@ This section contains the results of the experiments conducted during the develo
 - Use `yolo11x` model for all experiments.
 - Use `--epochs 100` for faster experiments. 
 
+### Training as Validation
+
+**GitHub Commit**: N/A
+
+**Objective**:
+- Use the training set as the validation set to see is there any unreasonable labelings that model couldn't even overfit.
+
+**Results**:
+- Confusion matrix <br>
+  <div style="display: flex; justify-content: space-around;">
+    <img src="./assets/train_is_val_confusion_matrix_normalized.png" alt="Training as Validation Confusion Matrix Normalized" width="45%">
+    <img src="./assets/train_is_val_confusion_matrix.png" alt="Training as Validation Confusion Matrix" width="45%">
+  </div>
+- Most of the classes seem to be learned well.
+
 ### Model Sweep
 
 **GitHub Commit**: [3fd972925ad585b568fb641629f41f9b4e2537e9](https://github.com/agbld/led-defects-detection/commit/3fd972925ad585b568fb641629f41f9b4e2537e9)
