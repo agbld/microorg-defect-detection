@@ -65,11 +65,11 @@ with PdfPages(args.output_file) as pdf:
     summary_data = []
     for model_name, df in data_frames.items():
         # Calculate the mean of all metrics for each epoch
-        df['mean_metric'] = df[['   metrics/precision(B)', '      metrics/recall(B)', '       metrics/mAP50(B)', '    metrics/mAP50-95(B)']].mean(axis=1)
-        
+        df['mean_metric'] = df[metrics_to_plot].mean(axis=1)
+
         # Choose the epoch with the highest mean metric
         best_epoch = df['mean_metric'].idxmax()
-        best_metrics = df.loc[best_epoch, ['   metrics/precision(B)', '      metrics/recall(B)', '       metrics/mAP50(B)', '    metrics/mAP50-95(B)']]
+        best_metrics = df.loc[best_epoch, ['   metrics/precision(B)', '      metrics/recall(B)', '       metrics/mAP50(B)', '    metrics/mAP50-95(B)', 'mean_metric']]
         summary_data.append({
             'Model': model_name,
             'Best Epoch': int(df.loc[best_epoch, '                  epoch']),
@@ -77,6 +77,7 @@ with PdfPages(args.output_file) as pdf:
             'mAP50-95': best_metrics['      metrics/recall(B)'],
             'Precision': best_metrics['       metrics/mAP50(B)'],
             'Recall': best_metrics['    metrics/mAP50-95(B)'],
+            'Mean Metric': round(best_metrics['mean_metric'], 5)
         })
 
     # Convert the summary data to a pandas DataFrame
