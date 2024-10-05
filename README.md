@@ -53,3 +53,9 @@ Arguments:
 - `--epochs`: Number of training epochs (default: 50).
 - `--batch_size`: Training batch size (default: 16).
 - `--run_name`: Custom run name.
+
+## Experiments
+
+Following are commits for different experiments:
+* [Model sweep](https://github.com/agbld/led-defects-detection/commit/3fd972925ad585b568fb641629f41f9b4e2537e9)
+* [Class sweep](https://github.com/agbld/led-defects-detection/commit/0c2a8258e75c5473fdf7dfb1750ccf6a6316fa7e)
