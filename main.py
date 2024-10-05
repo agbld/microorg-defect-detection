@@ -14,7 +14,7 @@ args = parser.parse_args()
 # Path to the dataset configuration YAML file
 DATA_CONFIG_PATH = args.data_config
 
-MODEL = 'yolo11x'  # YOLO model to use
+MODEL = args.model
 EPOCHS = args.epochs
 BATCH_SIZE = args.batch_size
 RUN_NAME = args.run_name
@@ -39,6 +39,10 @@ def train_model():
         batch=BATCH_SIZE,        # Batch size from argparse
         name=train_name,         # Custom run name
     )
+
+    # Save args to the folder
+    with open(f'runs/detect/{train_name}/cli-args.txt', 'w') as f:
+        f.write(str(args))
 
     print("Training complete!")
 
