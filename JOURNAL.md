@@ -2,6 +2,20 @@
 
 This journal contains the development process of the LED defects detection project. The project aims to detect defects in LEDs using the YOLO family of models. The dataset preparation is tailored for YOLO training, and training/testing is performed using the YOLO framework.
 
+## Questions
+
+- What are the general goals of the project?
+  - Inference time? Hardware constraints?
+  - Anomaly detection, but with classifying defects? with bounding boxes? Are they all necessary?
+- Unsupervised learning?
+  - After a bit survey, it seems the unsupervised learning approad on AD is more and more popular? (like diffusion approach)
+  - If I'm not mistaken, in this task, if unsupervised learning is feasible, it may be much more practical than continual learning using supervised learning.
+- How can we improve the dataset?
+  - More samples?
+  - More capturing angles?
+  - Modify annotations?
+  - Negotiate on the classes?
+
 ## Experiments
 
 This section contains the results of the experiments conducted during the development of this project. GitHub commits are provided for each experiment to ensure reproducibility.
