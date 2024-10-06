@@ -8,6 +8,7 @@ This journal contains the development process of the LED defects detection proje
   - Inference time? Hardware constraints?
   - Anomaly detection, but with classifying defects? with bounding boxes? Are they all necessary?
 - Unsupervised learning?
+  - Object detection vs. Anomaly detection
   - After a bit survey, it seems the unsupervised learning approad on AD is more and more popular? (like diffusion approach)
   - If I'm not mistaken, in this task, if unsupervised learning is feasible, it may be much more practical than continual learning using supervised learning.
 - How can we improve the dataset?
@@ -23,6 +24,8 @@ This section contains the results of the experiments conducted during the develo
 ### Class Sweep
 
 **GitHub Commit**: [cd675400b8f78e49c93cddb925846edf51a1ab2f](https://github.com/agbld/led-defects-detection/commit/cd675400b8f78e49c93cddb925846edf51a1ab2f)
+
+**GitHub Commit** (train as val version): [c5e92f94a4f5aa7e37484644ab43decf5d017e3e](https://github.com/agbld/led-defects-detection/commit/c5e92f94a4f5aa7e37484644ab43decf5d017e3e)
 
 #### Objective
 - An ablation study or an EDA to observe each class training outcomes.
@@ -65,11 +68,14 @@ This section contains the results of the experiments conducted during the develo
   <div style="display: flex; justify-content: space-around;">
     <img src="./assets/class_sweep_P.png" alt="Class Sweep P" width="48%">
     <img src="./assets/class_sweep_R.png" alt="Class Sweep R" width="48%">
-  </div>
+  </div><br>
+  <!-- <div style="display: flex; justify-content: center;">
+    <img src="./assets/class_sweep_map5095_train_as_val.png" alt="Class Sweep mAP50-90 Train as Val" width="70%">
+  </div><br> -->
 
 - **Conclusion** <br>
   - `led` and `marked` classes have almost no information. Consider removing them.
-  - `particle`, `Particle_Big` and `flip` classes have much more information.
+  - `particle`, `Particle_Big` and `flip` classes have much more information. However, the `particle` has problems on convergence. Require further error analysis (or more patience).
   - `tilt` and `led_ng` classes have insufficient data. Consider getting more samples or removing them.
 
 ### Training as Validation
@@ -113,3 +119,8 @@ This section contains the results of the experiments conducted during the develo
   ![Model Sweep Performance](./assets/model_sweep_performance.png)
 - According to precision, recall, mAPs, all tested models have **similar performance**.
 - Later models (*yolov9e*, *yolov10x*, *yolo11x*) have very slightly better performance than older models (*yolov5xu*, *yolov8x*).
+- Confusion matrix (yolo11x):
+  <div style="display: flex; justify-content: space-around;">
+    <img src="./assets/confusion_matrix_normalized.png" alt="Confusion Matrix Normalized" width="45%">
+    <img src="./assets/confusion_matrix.png" alt="Confusion Matrix" width="45%">
+  </div>
