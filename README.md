@@ -62,11 +62,16 @@ This section contains the results of the experiments conducted during the develo
 
 **GitHub Commit**: [cd675400b8f78e49c93cddb925846edf51a1ab2f](https://github.com/agbld/led-defects-detection/commit/cd675400b8f78e49c93cddb925846edf51a1ab2f)
 
-**Objective**:
+#### Objective
 - An ablation study or an EDA to observe each class training outcomes.
 - See the upper bound performance of the model for each class.
 
-**Results**:
+#### Method
+- Train the model with each class separately. Specifically, use `prepare_dataset.py` to prepare a dataset for each class. Then, train the model with `main.py` for each class.
+- Use `yolo11x` model for all experiments.
+- Use `--epochs 500` to ensure convergence.
+
+#### Results
 - Labels distribution <br>
     <div style="display: flex; justify-content: center;">
       <img src="./assets/class_distribution.png" alt="Labels Distribution" width="70%">
@@ -105,20 +110,19 @@ This section contains the results of the experiments conducted during the develo
   - `particle`, `Particle_Big` and `flip` classes have much more information.
   - `tilt` and `led_ng` classes have insufficient data. Consider getting more samples or removing them.
 
-**Method**:
-- Train the model with each class separately. Specifically, use `prepare_dataset.py` to prepare a dataset for each class. Then, train the model with `main.py` for each class.
-- Use `yolo11x` model for all experiments.
-- Use `--epochs 500` to ensure convergence.
-
 ### Training as Validation
 
 **GitHub Commit**: N/A
 
-**Objective**:
+#### Objective
 - Use the training set as the validation set to see is there any unreasonable labelings that model couldn't even overfit.
 - This is just a very ir-rigorous sanity check. If model could find any minor patterns to identify each specific sample, it should be able to overfit the training set.
 
-**Results**:
+#### Method
+- Use the training set as the validation set. Specifically, copy the path of training set from `data.yaml` to the validation set.
+- Use `yolo11x` model, `--epochs 100`.
+
+#### Results
 - Confusion matrix <br>
   <div style="display: flex; justify-content: space-around;">
     <img src="./assets/train_is_val_confusion_matrix_normalized.png" alt="Training as Validation Confusion Matrix Normalized" width="45%">
@@ -130,16 +134,10 @@ This section contains the results of the experiments conducted during the develo
 
 **GitHub Commit**: [3fd972925ad585b568fb641629f41f9b4e2537e9](https://github.com/agbld/led-defects-detection/commit/3fd972925ad585b568fb641629f41f9b4e2537e9)
 
-**Objective**:
+#### Objective
 - Find the best model for current dataset.
 
-**Results**:
-- Performance table:
-  ![Model Sweep Performance](./assets/model_sweep_performance.png)
-- According to precision, recall, mAPs, all tested models have **similar performance**.
-- Later models (*yolov9e*, *yolov10x*, *yolo11x*) have very slightly better performance than older models (*yolov5xu*, *yolov8x*).
-
-**Method**:
+#### Method
 - Use only those "major" classes that have enough samples to eliminate the data insufficiency problem. Which are: `led`, `particle`, `flip`, `Particle_Big`, `marked`.
 - Tested models:
   - `yolov5xu (97.2M)`
@@ -147,3 +145,9 @@ This section contains the results of the experiments conducted during the develo
   - `yolov9e (58.1M)`
   - `yolov10x (29.5M)`
   - `yolo11x (56.9M)`
+
+#### Results
+- Performance table:
+  ![Model Sweep Performance](./assets/model_sweep_performance.png)
+- According to precision, recall, mAPs, all tested models have **similar performance**.
+- Later models (*yolov9e*, *yolov10x*, *yolo11x*) have very slightly better performance than older models (*yolov5xu*, *yolov8x*).
