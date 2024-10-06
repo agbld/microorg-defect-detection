@@ -53,3 +53,11 @@ Arguments:
 - `--epochs`: Number of training epochs (default: 50).
 - `--batch_size`: Training batch size (default: 16).
 - `--run_name`: Custom run name.
+
+## Helper Scripts
+
+See inlined documentation in the scripts for more information.
+
+- [`analyze_results.py`](./analyze_results.py): Generate PDF reports of runs.
+- [`data/visualize_dataset.py`](./data/visualize_dataset.py): Render annotations on images and export to `data/vis_images/`.
+- [`data/preview_defects.py`](./data/preview_defects.py): Copy images with specific defects to `data/.tmp/`.
