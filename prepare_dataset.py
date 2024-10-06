@@ -14,6 +14,7 @@ parser.add_argument('--images_dir', type=str, default='./data/images', help='Pat
 parser.add_argument('--yolo_dir', type=str, default='./yolo_dataset', help='Path to the YOLO dataset directory')
 parser.add_argument('--train_ratio', type=float, default=0.8, help='Percentage of data to use for training')
 parser.add_argument('--included_classes', type=str, nargs='+', default=['led', 'particle', 'flip', 'Particle_Big', 'marked', 'tilt', 'led_ng'], help='List of classes to include')
+parser.add_argument('--train_as_val', action='store_true', help='Use training data as validation data')
 args = parser.parse_args()
 
 # Paths for the input and output data
@@ -130,9 +131,14 @@ save_yolo_annotations(val_images, 'val')
 
 # Create the data.yaml file for YOLOv8
 def create_yaml_file():
+    if args.train_as_val:
+        val_path = f'{YOLO_DIR}/train/images'
+    else:
+        val_path = f'{YOLO_DIR}/val/images'
+
     yaml_content = f"""
 train: {YOLO_DIR}/train/images
-val: {YOLO_DIR}/val/images
+val: {val_path}
 
 nc: {len(included_categories)}  # Number of classes
 names: {[category['name'] for category in included_categories]}  # Class names
