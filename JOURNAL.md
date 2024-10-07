@@ -4,18 +4,27 @@ This journal contains the development process of the LED defects detection proje
 
 ## Questions
 
-- What are the general goals of the project?
+- What are the ***general goals*** of the project?
   - Inference time? Hardware constraints?
-  - Anomaly detection, but with classifying defects? with bounding boxes? Are they all necessary?
+  - Incrementally adding new types of defects?
 - Unsupervised learning?
-  - Object detection vs. Anomaly detection
-  - After a bit survey, it seems the unsupervised learning approad on AD is more and more popular? (like diffusion approach)
-  - If I'm not mistaken, in this task, if unsupervised learning is feasible, it may be much more practical than continual learning using supervised learning.
+  - Object detection (YOLO) vs. Anomaly detection
+    - Supervised learning vs. Unsupervised learning
+    - Mastering special case vs. Mastering normal samples
+  - After a bit survey, it seems the unsupervised learning approach on AD is more and more popular? (like reconstruction-based approach)
+  ![AD Publications by Year](./assets/AD_publications_by_year.png)
+  - If unsupervised learning is feasible, could it be ***more practical than supervised continuous learning?***
+  - References:
+    - [AnoDDPM: Anomaly Detection with Denoising Diffusion
+Probabilistic Models using Simplex Noise](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Wyatt_AnoDDPM_Anomaly_Detection_With_Denoising_Diffusion_Probabilistic_Models_Using_Simplex_CVPRW_2022_paper.pdf)
+      - [Anomaly Detection with Conditioned Denoising Diffusion Models](https://arxiv.org/abs/2305.15956)
+        ![DDAD](./assets/DDAD.png)
+    - Survey: [A Survey on Visual Anomaly Detection: Challenge, Approach, and Prospect](https://arxiv.org/abs/2401.16402)
+    - Benchmark: [Anomaly Detection on MVTec AD](https://paperswithcode.com/sota/anomaly-detection-on-mvtec-ad)
 - How can we improve the dataset?
   - More samples?
   - More capturing angles?
-  - Modify annotations?
-  - Negotiate on the classes?
+  - Improve annotations?
 
 ## Experiments
 
