@@ -46,19 +46,5 @@ def train_model():
 
     print("Training complete!")
 
-# Test the model on the validation set
-def test_model():
-    best_weights = f'runs/detect/{train_name}/weights/best.pt'
-
-    model = YOLO(best_weights)  # Use the best weights from training
-
-    # Perform inference on the validation set
-    results = model.val(data=DATA_CONFIG_PATH,
-                        name=val_name)
-
-    # Print mAP results
-    print(f"Validation Results:\n{results}")
-
 if __name__ == '__main__':
     train_model()
-    test_model()
