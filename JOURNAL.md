@@ -12,13 +12,16 @@ This journal contains the development process of the LED defects detection proje
     - Supervised learning vs. Unsupervised learning
     - Mastering special case vs. Mastering normal samples
   - After a bit survey, it seems the unsupervised learning approach on AD is more and more popular? (like reconstruction-based approach)
-  ![AD Publications by Year](./assets/AD_publications_by_year.png)
+    <div style="display: flex; justify-content: center;">
+      <img src="./assets/AD_publications_by_year.png" alt="AD Publications by Year" width="70%">
+    </div>
   - If unsupervised learning is feasible, could it be ***more practical than supervised continuous learning?***
   - References:
-    - [AnoDDPM: Anomaly Detection with Denoising Diffusion
-Probabilistic Models using Simplex Noise](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Wyatt_AnoDDPM_Anomaly_Detection_With_Denoising_Diffusion_Probabilistic_Models_Using_Simplex_CVPRW_2022_paper.pdf)
+    - [AnoDDPM: Anomaly Detection with Denoising Diffusion Probabilistic Models using Simplex Noise](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Wyatt_AnoDDPM_Anomaly_Detection_With_Denoising_Diffusion_Probabilistic_Models_Using_Simplex_CVPRW_2022_paper.pdf)
       - [Anomaly Detection with Conditioned Denoising Diffusion Models](https://arxiv.org/abs/2305.15956)
-        ![DDAD](./assets/DDAD.png)
+        <div style="display: flex; justify-content: center;">
+          <img src="./assets/DDAD.png" alt="DDAD" width="70%">
+        </div>
     - Survey: [A Survey on Visual Anomaly Detection: Challenge, Approach, and Prospect](https://arxiv.org/abs/2401.16402)
     - Benchmark: [Anomaly Detection on MVTec AD](https://paperswithcode.com/sota/anomaly-detection-on-mvtec-ad)
 - How can we improve the dataset?
