@@ -21,6 +21,33 @@ This journal contains the development process of the LED defects detection proje
 
 This section contains the results of the experiments conducted during the development of this project. GitHub commits are provided for each experiment to ensure reproducibility.
 
+### Model Sweep
+
+**GitHub Commit**: [3fd972925ad585b568fb641629f41f9b4e2537e9](https://github.com/agbld/led-defects-detection/commit/3fd972925ad585b568fb641629f41f9b4e2537e9)
+
+#### Objective
+- Find the best model for current dataset.
+
+#### Method
+- Use only those "major" classes that have enough samples to eliminate the data insufficiency problem. Which are: `led`, `particle`, `flip`, `Particle_Big`, `marked`.
+- Tested models:
+  - `yolov5xu (97.2M)`
+  - `yolov8x (68.2M)`
+  - `yolov9e (58.1M)`
+  - `yolov10x (29.5M)`
+  - `yolo11x (56.9M)`
+
+#### Results
+- Performance table:
+  ![Model Sweep Performance](./assets/model_sweep_performance.png)
+- According to precision, recall, mAPs, all tested models have **similar performance**.
+- Later models (*yolov9e*, *yolov10x*, *yolo11x*) have very slightly better performance than older models (*yolov5xu*, *yolov8x*).
+- Confusion matrix (yolo11x):
+  <div style="display: flex; justify-content: space-around;">
+    <img src="./assets/confusion_matrix_normalized.png" alt="Confusion Matrix Normalized" width="45%">
+    <img src="./assets/confusion_matrix.png" alt="Confusion Matrix" width="45%">
+  </div>
+
 ### Class Sweep
 
 **GitHub Commit**: [cd675400b8f78e49c93cddb925846edf51a1ab2f](https://github.com/agbld/led-defects-detection/commit/cd675400b8f78e49c93cddb925846edf51a1ab2f)
@@ -69,9 +96,6 @@ This section contains the results of the experiments conducted during the develo
     <img src="./assets/class_sweep_P.png" alt="Class Sweep P" width="48%">
     <img src="./assets/class_sweep_R.png" alt="Class Sweep R" width="48%">
   </div><br>
-  <!-- <div style="display: flex; justify-content: center;">
-    <img src="./assets/class_sweep_map5095_train_as_val.png" alt="Class Sweep mAP50-90 Train as Val" width="70%">
-  </div><br> -->
 
 - **Conclusion** <br>
   - `led` and `marked` classes have almost no information. Consider removing them.
@@ -98,29 +122,30 @@ This section contains the results of the experiments conducted during the develo
   </div>
 - Most of the classes seem to be learned well.
 
-### Model Sweep
+### Particle Error Analysis
 
-**GitHub Commit**: [3fd972925ad585b568fb641629f41f9b4e2537e9](https://github.com/agbld/led-defects-detection/commit/3fd972925ad585b568fb641629f41f9b4e2537e9)
+**GitHub Commit**: N/A
 
 #### Objective
-- Find the best model for current dataset.
+
+- Investigate how the model performs on the `particle` class.
 
 #### Method
-- Use only those "major" classes that have enough samples to eliminate the data insufficiency problem. Which are: `led`, `particle`, `flip`, `Particle_Big`, `marked`.
-- Tested models:
-  - `yolov5xu (97.2M)`
-  - `yolov8x (68.2M)`
-  - `yolov9e (58.1M)`
-  - `yolov10x (29.5M)`
-  - `yolo11x (56.9M)`
+- Use the `inference.py` script to visualize error samples on the `particle` class.
+- Use 1) the best checkpoint so far on major classes (`major-cls-yolo11x`), 2) the best checkpoint for `particle` class in train-as-val experiment (`train-as-val-particle`).
 
 #### Results
-- Performance table:
-  ![Model Sweep Performance](./assets/model_sweep_performance.png)
-- According to precision, recall, mAPs, all tested models have **similar performance**.
-- Later models (*yolov9e*, *yolov10x*, *yolo11x*) have very slightly better performance than older models (*yolov5xu*, *yolov8x*).
-- Confusion matrix (yolo11x):
-  <div style="display: flex; justify-content: space-around;">
-    <img src="./assets/confusion_matrix_normalized.png" alt="Confusion Matrix Normalized" width="45%">
-    <img src="./assets/confusion_matrix.png" alt="Confusion Matrix" width="45%">
+- Error occured when the granularity that model learned is not aligned with ground truth. 
+- Plus, some of the samples seem to be mislabeled.
+- See the following figures:
+  <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+    <img src="./assets/particle_error_analysis_1.jpg" alt="Particle Error Analysis 1" width="31%">
+    <img src="./assets/particle_error_analysis_2.jpg" alt="Particle Error Analysis 2" width="31%">
+    <img src="./assets/particle_error_analysis_3.jpg" alt="Particle Error Analysis 3" width="31%">
+  </div><br>
+  <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+    <img src="./assets/particle_error_analysis_4.jpg" alt="Particle Error Analysis 4" width="31%">
+    <img src="./assets/particle_error_analysis_5.jpg" alt="Particle Error Analysis 5" width="31%">
+    <img src="./assets/particle_error_analysis_6.jpg" alt="Particle Error Analysis 6" width="31%">
   </div>
+- The above samples are from the `train-as-val-particle`. This shows that, with sufficient data, the model could learn the `particle` class well.
