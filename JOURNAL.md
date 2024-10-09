@@ -11,9 +11,9 @@ This journal contains the development process of the LED defects detection proje
   - Object detection (YOLO) vs. Anomaly detection
     - Supervised learning vs. Unsupervised learning
     - Mastering special case vs. Mastering normal samples
-  - After a bit survey, it seems the unsupervised learning approach on AD is more and more popular? (like reconstruction-based approach)
+  - After a bit [survey](https://arxiv.org/abs/2401.16402), it seems the unsupervised learning approach on AD is more and more popular? (like reconstruction-based approach)
     <div style="display: flex; justify-content: center;">
-      <img src="./assets/AD_publications_by_year.png" alt="AD Publications by Year" width="70%" href="https://arxiv.org/abs/2401.16402">
+      <img src="./assets/AD_publications_by_year.png" alt="AD Publications by Year" width="70%">
     </div>
   - If unsupervised learning is feasible, could it be ***more practical than supervised continuous learning?***
   - References:
