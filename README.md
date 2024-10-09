@@ -15,21 +15,21 @@ This repository contains scripts to prepare datasets and train YOLO models for d
    pip install -r requirements.txt
    ```
 
-## Dataset Preparation
+## Usage
 
-Use `prepare_dataset.py` to prepare a dataset in YOLO format from a COCO JSON file.
+### 1. Dataset Preparation
 
-### Example Usage
+Use `prepare_dataset.py` to prepare a dataset for training.
 
-* Prepare a dataset for all classes:
-  ```bash
-  python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8
-  ```
+Prepare a dataset for all classes:
+```bash
+python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8
+```
 
-* Prepare a dataset for specific classes:
-  ```bash
-  python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes led particle flip Particle_Big marked
-  ```
+Or, prepare a dataset for specific classes:
+```bash
+python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes led particle flip Particle_Big marked
+```
 
 Arguments:
 - `--coco_json`: Path to COCO format JSON.
@@ -38,13 +38,12 @@ Arguments:
 - `--train_ratio`: Ratio for train-validation split (default: 0.8).
 - `--included_classes`: Classes to include (default: `['led', 'particle', 'flip', ...]`).
 
-## Model Training and Evaluation
+### 2. Training
 
-Use `main.py` to train and evaluate the YOLO model.
+Use `main.py` to train the YOLO model.
 
-### Example Usage
 ```bash
-python main.py --data_config ./yolo_dataset/data.yaml --model yolo11x --epochs 50 --batch_size 16 --run_name experiment1
+python train.py --data_config ./yolo_dataset/data.yaml --model yolo11x --epochs 50 --batch_size 16 --run_name experiment1
 ```
 
 Arguments:
@@ -54,10 +53,31 @@ Arguments:
 - `--batch_size`: Training batch size (default: 16).
 - `--run_name`: Custom run name.
 
+### 3. Inference
+
+Use `inference.py` to run inference on dataset.
+
+```bash
+python inference.py --weights runs/detect/experiment1/weights/best.pt --data_config yolo_dataset/data.yaml --split val --run_name experiment1
+```
+
+Arguments:
+- `--weights`: Path to model weights file.
+- `--data_config`: Path to data config YAML.
+- `--split`: Dataset split to analyze (default: `val`).
+- `--run_name`: Custom run name for analysis.
+- `--save_dir`: Directory to save analysis results (default: `./runs/detect/`).
+- `--classes`: List of class names to filter.
+
+After running inference, the results will be saved in `./runs/detect/` directory. The results include:
+- `per_class_stats.csv`: Per-class performance statistics.
+- `cli-args.txt`: Command line arguments used for inference.
+- (error samples with rendered annotations).jpg
+
 ## Helper Scripts
 
 See inlined documentation in the scripts for more information.
 
-- [`analyze_results.py`](./analyze_results.py): Generate PDF reports of runs.
+- [`generate_runs_report.py`](./generate_runs_report.py): Generate PDF reports of runs.
 - [`data/visualize_dataset.py`](./data/visualize_dataset.py): Render annotations on images and export to `data/vis_images/`.
 - [`data/preview_defects.py`](./data/preview_defects.py): Copy images with specific defects to `data/.tmp/`.

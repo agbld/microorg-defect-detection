@@ -16,18 +16,25 @@ This journal contains the development process of the LED defects detection proje
       <img src="./assets/AD_publications_by_year.png" alt="AD Publications by Year" width="70%">
     </div>
   - If unsupervised learning is feasible, could it be ***more practical than supervised continuous learning?***
-  - References:
-    - [AnoDDPM: Anomaly Detection with Denoising Diffusion Probabilistic Models using Simplex Noise](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Wyatt_AnoDDPM_Anomaly_Detection_With_Denoising_Diffusion_Probabilistic_Models_Using_Simplex_CVPRW_2022_paper.pdf)
-      - [Anomaly Detection with Conditioned Denoising Diffusion Models](https://arxiv.org/abs/2305.15956)
-        <div style="display: flex; justify-content: center;">
-          <img src="./assets/DDAD.png" alt="DDAD" width="70%">
-        </div>
-    - Survey: [A Survey on Visual Anomaly Detection: Challenge, Approach, and Prospect](https://arxiv.org/abs/2401.16402)
-    - Benchmark: [Anomaly Detection on MVTec AD](https://paperswithcode.com/sota/anomaly-detection-on-mvtec-ad)
 - How can we improve the dataset?
   - More samples?
   - More capturing angles?
   - Improve annotations?
+- References:
+  - [A Unified Anomaly Synthesis Strategy with Gradient Ascent for Industrial Anomaly Detection and Localization](https://arxiv.org/abs/2407.09359) (2024)
+    - A very SOTA approach for data augmentation for anomaly detection.
+  - [WinCLIP: Zero-/Few-Shot Anomaly Classification and Segmentation](https://arxiv.org/abs/2303.14814) (2023)
+    - A interesting approach for zero-shot anomaly detection.
+  - [EfficientAD: Accurate Visual Anomaly Detection at Millisecond-Level Latencies](https://arxiv.org/abs/2303.14535) (2023)
+    - An ultra fast yet accurate anomaly detection approach.
+  - [Towards Total Recall in Industrial Anomaly Detection](https://arxiv.org/abs/2106.08265)
+    - An old but popular (cited 791) paper on anomaly detection.
+  - [AnoDDPM: Anomaly Detection with Denoising Diffusion Probabilistic Models using Simplex Noise](https://openaccess.thecvf.com/content/CVPR2022W/NTIRE/papers/Wyatt_AnoDDPM_Anomaly_Detection_With_Denoising_Diffusion_Probabilistic_Models_Using_Simplex_CVPRW_2022_paper.pdf)
+    - Diffusion, reconstruction-based approach.
+    - Follow-up: [Anomaly Detection with Conditioned Denoising Diffusion Models](https://arxiv.org/abs/2305.15956)
+  - Survey: [A Survey on Visual Anomaly Detection: Challenge, Approach, and Prospect](https://arxiv.org/abs/2401.16402) (2024)
+  - Very useful library: [openvinotoolkit/anomalib](https://github.com/openvinotoolkit/anomalib.git)
+  - Benchmark: [Anomaly Detection on MVTec AD](https://paperswithcode.com/sota/anomaly-detection-on-mvtec-ad)
 
 ## Experiments
 
