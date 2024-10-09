@@ -2,6 +2,8 @@
 
 This repository contains scripts to prepare datasets and train YOLO models for detecting defects in LEDs. The dataset preparation is tailored for YOLO family training, and training/testing is performed using the YOLO framework.
 
+See [`JOURNAL.md`](./JOURNAL.md) for a detailed experiment log.
+
 ## Setup
 
 1. Clone the repository:
