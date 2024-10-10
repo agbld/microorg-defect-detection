@@ -48,7 +48,7 @@ Arguments:
 
 ### 2. Training
 
-Use `main.py` to train the YOLO model.
+Use `train.py` to train the YOLO model.
 
 ```bash
 python train.py --data_config ./yolo_dataset/data.yaml --model yolo11x --epochs 50 --batch_size 16 --run_name experiment1
