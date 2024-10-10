@@ -14,7 +14,7 @@ See [`JOURNAL.md`](./JOURNAL.md) for a detailed experiment log.
 
 2. Install PyTorch from the [official website](https://pytorch.org/get-started/locally/). For Ubuntu with CUDA 11.8, you can use the following command:
    ```bash
-   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+   pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
    ```
    (This is just an example, please refer to the official website for the exact command for your system)
 
