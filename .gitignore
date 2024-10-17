@@ -3,6 +3,8 @@ runs/
 models/
 yolo_dataset/
 data/vis_images
+data/annotations
+data/images
 data/.tmp
 screenlog.0
 runs_report.pdf
