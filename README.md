@@ -23,6 +23,8 @@ See [`JOURNAL.md`](./JOURNAL.md) for a detailed experiment log.
    pip install -r requirements.txt
    ```
 
+4. Download the required dataset. (The dataset is not included in this repository due to NDAs. Please contact the repository owner for access to the dataset)
+
 ## Usage
 
 ### 1. Dataset Preparation
@@ -31,12 +33,12 @@ Use `prepare_dataset.py` to prepare a dataset for training.
 
 Prepare a dataset for all classes:
 ```bash
-python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8
+python prepare_dataset.py --coco_json ../data/origianl/annotations/instance.json --images_dir ../data/origianl/images --yolo_dir ./yolo_dataset --train_ratio 0.8
 ```
 
 Or, prepare a dataset for specific classes:
 ```bash
-python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes led particle flip Particle_Big marked
+python prepare_dataset.py --coco_json ../data/origianl/annotations/instance.json --images_dir ../data/original/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes led particle flip Particle_Big marked
 ```
 
 Arguments:
@@ -86,6 +88,6 @@ After running inference, the results will be saved in `./runs/detect/` directory
 
 See inlined documentation in the scripts for more information.
 
-- [`generate_runs_report.py`](./generate_runs_report.py): Generate PDF reports of runs.
+- [`ultralytics/generate_runs_report.py`](./ultralytics/generate_runs_report.py): Generate PDF reports of runs.
 - [`data/visualize_dataset.py`](./data/visualize_dataset.py): Render annotations on images and export to `data/vis_images/`.
 - [`data/preview_defects.py`](./data/preview_defects.py): Copy images with specific defects to `data/.tmp/`.

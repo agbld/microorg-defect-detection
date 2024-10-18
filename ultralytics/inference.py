@@ -8,12 +8,6 @@ import numpy as np
 from tqdm import tqdm
 from datetime import datetime
 
-"""
-python prepare_dataset.py --coco_json ./data/annotations/instance.json --images_dir ./data/images --yolo_dir ./yolo_dataset --train_ratio 1 --train_as_val --included_classes led particle flip Particle_Big marked
-
-python inference.py --weights runs/archive_model_sweep/major-cls-yolo11x_train_20241005_225718/weights/best.pt --data_config yolo_dataset/data.yaml --split val --run_name major-cls-yolo11x-particle-all --save_dir runs/detect/ --classes particle
-"""
-
 def parse_args():
     parser = argparse.ArgumentParser(description='Error analysis for YOLO model on a dataset')
     parser.add_argument('--weights', type=str, required=True, help='Path to model weights file')

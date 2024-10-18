@@ -9,8 +9,8 @@ import numpy as np
 
 # Define the command line arguments
 parser = argparse.ArgumentParser(description='Prepare a dataset for YOLOv5 training')
-parser.add_argument('--coco_json', type=str, default='./data/annotations/instance.json', help='Path to the COCO JSON file')
-parser.add_argument('--images_dir', type=str, default='./data/images', help='Path to the directory containing images')
+parser.add_argument('--coco_json', type=str, default='../data/original/annotations/instance.json', help='Path to the COCO JSON file')
+parser.add_argument('--images_dir', type=str, default='../data/original/images', help='Path to the directory containing images')
 parser.add_argument('--yolo_dir', type=str, default='./yolo_dataset', help='Path to the YOLO dataset directory')
 parser.add_argument('--train_ratio', type=float, default=0.8, help='Percentage of data to use for training')
 parser.add_argument('--included_classes', type=str, nargs='+', default=['led', 'particle', 'flip', 'Particle_Big', 'marked', 'tilt', 'led_ng'], help='List of classes to include')
