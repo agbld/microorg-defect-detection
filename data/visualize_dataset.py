@@ -12,8 +12,8 @@ import matplotlib.pyplot as plt
 import random
 
 # Define paths
-json_file = './annotations/instance.json'
-images_folder = './images'
+json_file = './src/annotations/instance.json'
+images_folder = './src/images'
 output_folder = './vis_images'
 
 # Load the JSON data

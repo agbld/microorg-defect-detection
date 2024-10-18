@@ -12,8 +12,8 @@ import shutil
 import argparse
 
 # Define paths
-json_file = './annotations/instance.json'
-images_folder = './images'
+json_file = './src/annotations/instance.json'
+images_folder = './src/images'
 vis_images_folder = './vis_images'
 tmp_folder = './.tmp'
 tmp_images_folder = os.path.join(tmp_folder, 'images')

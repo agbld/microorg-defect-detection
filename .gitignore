@@ -1,10 +1,9 @@
-*.pt
-runs/
-models/
-yolo_dataset/
+# UltraLytics
+ultralytics/runs/
+ultralytics/models/
+ultralytics/yolo_dataset/
 data/vis_images
-data/annotations
-data/images
+data/original
 data/.tmp
 screenlog.0
 runs_report.pdf
