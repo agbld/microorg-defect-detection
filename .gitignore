@@ -2,9 +2,13 @@
 ultralytics/runs/
 ultralytics/models/
 ultralytics/yolo_dataset/
-data/vis_images
-data/original
-data/.tmp
+
+# Datasets (sensitive data)
+data/original/
+data/visualized/
+data/preview/
+
+# Misc.
 screenlog.0
 runs_report.pdf
 

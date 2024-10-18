@@ -12,9 +12,9 @@ import matplotlib.pyplot as plt
 import random
 
 # Define paths
-json_file = './src/annotations/instance.json'
-images_folder = './src/images'
-output_folder = './vis_images'
+json_file = './original/annotations/instance.json'
+images_folder = './original/images'
+output_folder = './visualized'
 
 # Load the JSON data
 with open(json_file, 'r') as f:

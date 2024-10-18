@@ -12,12 +12,12 @@ import shutil
 import argparse
 
 # Define paths
-json_file = './src/annotations/instance.json'
-images_folder = './src/images'
-vis_images_folder = './vis_images'
-tmp_folder = './.tmp'
-tmp_images_folder = os.path.join(tmp_folder, 'images')
-tmp_vis_folder = os.path.join(tmp_folder, 'vis_images')
+json_file = './original/annotations/instance.json'
+images_folder = './original/images'
+vis_images_folder = './visualized'
+tmp_folder = './preview'
+tmp_images_folder = os.path.join(tmp_folder, 'original')
+tmp_vis_folder = os.path.join(tmp_folder, 'visualized')
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='Copy images with specified classes.')
