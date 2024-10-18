@@ -27,7 +27,9 @@ See [`JOURNAL.md`](./JOURNAL.md) for a detailed experiment log.
 
 ## Usage
 
-### 1. Dataset Preparation
+### UltraLytics (YOLO family)
+
+#### 1. Dataset Preparation
 
 Use `prepare_dataset.py` to prepare a dataset for training.
 
@@ -48,7 +50,7 @@ Arguments:
 - `--train_ratio`: Ratio for train-validation split (default: 0.8).
 - `--included_classes`: Classes to include (default: `['led', 'particle', 'flip', ...]`).
 
-### 2. Training
+#### 2. Training
 
 Use `train.py` to train the YOLO model.
 
@@ -63,7 +65,7 @@ Arguments:
 - `--batch_size`: Training batch size (default: 16).
 - `--run_name`: Custom run name.
 
-### 3. Inference
+#### 3. Inference
 
 Use `inference.py` to run inference on dataset.
 
@@ -83,6 +85,10 @@ After running inference, the results will be saved in `./runs/detect/` directory
 - `per_class_stats.csv`: Per-class performance statistics.
 - `cli-args.txt`: Command line arguments used for inference.
 - (error samples with rendered annotations).jpg
+
+### Anomalib (EfficientAD)
+
+(In progress)
 
 ## Helper Scripts
 
