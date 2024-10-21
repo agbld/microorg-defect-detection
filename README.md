@@ -35,12 +35,12 @@ Use `prepare_dataset.py` to prepare a dataset for training.
 
 Prepare a dataset for all classes:
 ```bash
-python prepare_dataset.py --coco_json ../data/origianl/annotations/instance.json --images_dir ../data/origianl/images --yolo_dir ./yolo_dataset --train_ratio 0.8
+python prepare_dataset.py --coco_json ../data/original/annotations/instance.json --images_dir ../data/original/images --yolo_dir ./yolo_dataset --train_ratio 0.8
 ```
 
 Or, prepare a dataset for specific classes:
 ```bash
-python prepare_dataset.py --coco_json ../data/origianl/annotations/instance.json --images_dir ../data/original/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes led particle flip Particle_Big marked
+python prepare_dataset.py --coco_json ../data/original/annotations/instance.json --images_dir ../data/original/images --yolo_dir ./yolo_dataset --train_ratio 0.8 --included_classes particle flip Particle_Big tilt led_ng
 ```
 
 Arguments:
@@ -55,7 +55,7 @@ Arguments:
 Use `train.py` to train the YOLO model.
 
 ```bash
-python train.py --data_config ./yolo_dataset/data.yaml --model yolo11x --epochs 50 --batch_size 16 --run_name experiment1
+python train.py --data_config ./yolo_dataset/data.yaml --model yolo11x --epochs 500 --batch_size 16 --run_name experiment
 ```
 
 Arguments:

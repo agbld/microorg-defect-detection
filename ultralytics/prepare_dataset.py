@@ -183,7 +183,7 @@ def display_class_distribution(stats):
     train_counts = [stats['train']['class_counts'].get(cls, 0) for cls in classes]
     val_counts = [stats['val']['class_counts'].get(cls, 0) for cls in classes]
 
-    class_names = [coco_data['categories'][cls]['name'] for cls in classes]
+    class_names = [included_categories[cls]['name'] for cls in classes]
 
     fig, ax = plt.subplots()
     index = np.arange(len(classes))
