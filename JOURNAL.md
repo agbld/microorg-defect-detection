@@ -1,6 +1,21 @@
 # LED Defects Detection: Journal
 
-This journal contains the development process of the LED defects detection project. The project aims to detect defects in LEDs using the YOLO family of models. The dataset preparation is tailored for YOLO training, and training/testing is performed using the YOLO framework.
+This journal contains the experiments and findings during the development of the LED defects detection project. The project aims to detect defects in LED panels using deep learning techniques.
+
+## Table of Contents
+
+- [Questions](#questions)
+- [Experiments - Ultralytics (YOLO Family)](#experiments---ultralytics-yolo-family)
+  - [Model Sweep](#model-sweep)
+  - [Class Sweep](#class-sweep)
+  - [Training as Validation](#training-as-validation)
+  - [Particle Error Analysis](#particle-error-analysis)
+- [Experiments - EfficientAD](#experiments---efficientad)
+  - [EfficientAD vs. YOLOv11x](#efficientad-vs-yolov11x)
+  - [Case Study](#case-study)
+    - [Good Samples (Normal)](#good-samples-normal)
+    - [Defect Samples (Anomalies)](#defect-samples-anomalies)
+    - [It Even Finds Many Mislabeled Samples](#it-even-finds-many-mislabeled-samples)
 
 ## Questions
 
