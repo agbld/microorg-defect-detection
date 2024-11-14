@@ -1,8 +1,24 @@
 # LED Defects Detection
 
-This repository contains scripts to prepare datasets and train YOLO models for detecting defects in LEDs. The dataset preparation is tailored for YOLO family training, and training/testing is performed using the YOLO framework.
-
+This repository aims to provide a comprehensive solution for detecting defects in private LED datasets using multiple approaches. Currently, it supports YOLO and EfficientAD frameworks, but it is designed to be extensible, allowing for the integration of additional machine learning models and techniques in the future.
 See [`JOURNAL.md`](./JOURNAL.md) for a detailed experiment log.
+
+## Table of Contents
+
+- [UltraLytics (YOLO family)](#ultralytics-yolo-family)
+   - [Setup](#setup)
+   - [Usage](#usage)
+      - [Dataset Preparation](#1-dataset-preparation)
+      - [Training](#2-training)
+      - [Inference](#3-inference)
+      - [Helper Scripts](#helper-scripts)
+- [EfficientAD](#efficientad)
+   - [Setup](#setup-1)
+   - [Usage](#usage-1)
+      - [Dataset Preparation](#1-dataset-preparation-1)
+      - [Training](#2-training-1)
+      - [Evaluation](#3-evaluation)
+      - [Helper Scripts](#helper-scripts-1)
 
 ## UltraLytics (YOLO family)
 
@@ -133,7 +149,7 @@ Please note that EfficientAD is a fully UNSUPERVISED learning approach that requ
 
 ### Usage
 
-Prepare dataset:
+#### 1. Dataset Preparation
 ```bash
 python prepare_dataset.py --annotations ../data/original/annotations/instance.json --labeled_dir ../data/original/images/ --unlabeled_dir ../data/original/normal/B/ --output_dir efficientad_dataset --train_ratio 0.8
 ```
@@ -145,6 +161,8 @@ Arguments:
 - `--output_dir`: Directory to save EfficientAD formatted dataset.
 - `--train_ratio`: Ratio for train-validation split (default: 0.8).
 
+#### 2. Training
+```bash
 Train EfficientAD on custom dataset:
 ```bash
 python train.py --dataset custom --custom_dataset_path efficientad_dataset --output_dir output/1 --model_size small --epochs 10 --batch_size 10
@@ -158,6 +176,7 @@ Arguments:
 - `--epochs`: Number of training epochs (default: 10).
 - `--batch_size`: Training batch size (default: 10).
 
+#### 3. Evaluation
 Evaluate EfficientAD on custom dataset:
 ```bash
 python eval.py --dataset custom --custom_dataset_path efficientad_dataset --output_dir output/1 --model_size small --map_format jpg --threshold 15 --weights_dir output/1/trainings/custom
