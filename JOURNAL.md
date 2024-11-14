@@ -36,7 +36,7 @@ This journal contains the development process of the LED defects detection proje
   - Very useful library: [openvinotoolkit/anomalib](https://github.com/openvinotoolkit/anomalib.git)
   - Benchmark: [Anomaly Detection on MVTec AD](https://paperswithcode.com/sota/anomaly-detection-on-mvtec-ad)
 
-## Experiments
+## Experiments - Ultralytics (YOLO Family)
 
 This section contains the results of the experiments conducted during the development of this project. GitHub commits are provided for each experiment to ensure reproducibility.
 
@@ -168,3 +168,121 @@ This section contains the results of the experiments conducted during the develo
     <img src="./assets/particle_error_analysis_6.jpg" alt="Particle Error Analysis 6" width="31%">
   </div>
 - The above samples are from the `train-as-val-particle`. This shows that, with sufficient data, the model could learn the `particle` class well.
+
+## Experiments - EfficientAD
+
+After doing EDA with YOLO, the unsupervised learning approach is considered. The EfficientAD approach is chosen for its ultra-fast inference time. See fur
+
+### EfficientAD vs. YOLOv11x
+
+#### EfficientAD
+
+* Training completed in **52 seconds**
+* Inference completed in 5 seconds (< 10ms per image)
+* (See [It Even Finds Many Mislabeled Samples](#it-even-finds-many-mislabeled-samples) for poor performance for `good` class)
+```bash
+(led) ee303@ee303-Z790-AORUS-ELITE:~/Documents/agbld/GitHub/led-defects-detection/efficientad$ python train.py --dataset custom --custom_dataset_path efficientad_dataset --output_dir output/1 --model_size small --epochs 10 --batch_size 10
+Computing mean of features: 100%|█████████████████████████████████████████████████████████████████████████████████████████████| 70/70 [00:00<00:00, 90.79it/s]
+Computing std of features: 100%|█████████████████████████████████████████████████████████████████████████████████████████████| 70/70 [00:00<00:00, 114.32it/s]
+Epoch: 10/10 - Iteration: 61/70 - Current loss: 5.2889: 100%|█████████████████████████████████████████████████████████████████| 10/10 [00:56<00:00,  5.61s/it]
+Final map normalization: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████| 8/8 [00:00<00:00, 23.32it/s]
+(led) ee303@ee303-Z790-AORUS-ELITE:~/Documents/agbld/GitHub/led-defects-detection/efficientad$ python eval.py --dataset custom --custom_dataset_path efficientad_dataset --output_dir output/1 --model_size small --map_format jpg --threshold 15 --weights_dir output/1/trainings/custom
+Final inference: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████| 543/543 [00:03<00:00, 153.74it/s]
+
+Class            Accuracy    Precision    Recall    Num Samples
+-------------  ----------  -----------  --------  -------------
+defect_type_2      1.0000       1.0000    1.0000            112
+defect_type_3      1.0000       1.0000    1.0000             87
+defect_type_4      1.0000       1.0000    1.0000            134
+defect_type_6      1.0000       1.0000    1.0000              6
+defect_type_7      1.0000       1.0000    1.0000             10
+good               0.8505       1.0000    0.8505            194
+
+Class      Accuracy    Precision    Recall    Num Samples
+-------  ----------  -----------  --------  -------------
+Overall      0.9466       0.9233    1.0000            543
+Final image AUC: 98.5636
+```
+
+#### YOLOv11x Under Similar Settings
+
+* Training completed in **741 seconds**
+* Inference completed in **2 seconds** (< 10ms per image)
+```bash
+Processing images: 100%|████████████████████████████████████████████████████████████████████████| 229/229 [00:02<00:00, 112.13it/s]
+
+Overall Metrics:
+Accuracy: 0.8734
+Precision: 0.7527
+Recall: 0.9211
+AUC: 0.9383
+
+Class            Accuracy    Precision    Recall    Num Samples
+-------------  ----------  -----------  --------  -------------
+defect_type_2      0.9200       1.0000    0.9200             25
+defect_type_3      1.0000       1.0000    1.0000             19
+defect_type_4      0.8621       1.0000    0.8621             29
+defect_type_6      1.0000       1.0000    1.0000              1
+defect_type_7      1.0000       1.0000    1.0000              2
+good               0.8497       0.0000    0.0000            153
+```
+
+### Case Study
+
+#### Good Samples (Normal)
+
+<table>
+    <tr>
+        <td><img src="./efficientad/assets/good_1.jpg" alt="good_1" /><br /><center>Good 1</center></td>
+        <td><img src="./efficientad/assets/good_2.jpg" alt="good_2" /><br /><center>Good 2</center></td>
+        <td><img src="./efficientad/assets/good_3.jpg" alt="good_3" /><br /><center>Good 3</center></td>
+    </tr>
+</table>
+
+#### Defect Samples (Anomalies)
+
+<table>
+    <tr>
+        <td><img src="./efficientad/assets/Particle_Big_1.jpg" alt="Particle_Big_1" /><br /><center>Particle Big 1</center></td>
+        <td><img src="./efficientad/assets/Particle_Big_2.jpg" alt="Particle_Big_2" /><br /><center>Particle Big 2</center></td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td><img src="./efficientad/assets/particle_1.jpg" alt="particle_1" /><br /><center>Particle 1</center></td>
+        <td><img src="./efficientad/assets/particle_2.jpg" alt="particle_2" /><br /><center>Particle 2</center></td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td><img src="./efficientad/assets/led_ng_1.jpg" alt="led_ng_1" /><br /><center>LED NG 1</center></td>
+        <td><img src="./efficientad/assets/led_ng_2.jpg" alt="led_ng_2" /><br /><center>LED NG 2</center></td>
+    </tr>
+</table>
+<table>
+    <td><img src="./efficientad/assets/flip_1.jpg" alt="flip_1" /><br /><center>Flip 1</center></td>
+    <td><img src="./efficientad/assets/flip_2.jpg" alt="flip_2" /><br /><center>Flip 2</center></td>
+    <td><img src="./efficientad/assets/flip_3.jpg" alt="flip_3" /><br /><center>Flip 3</center></td>
+    </tr>
+</table>
+<table>
+    <td><img src="./efficientad/assets/tilt_1.jpg" alt="tilt_1" /><br /><center>Tilt 1</center></td>
+    <td><img src="./efficientad/assets/tilt_2.jpg" alt="tilt_2" /><br /><center>Tilt 2</center></td>
+    <td><img src="./efficientad/assets/oh_no.jpg" alt="oh_no" /><br /><center>...</center></td>
+    </tr>
+</table>
+
+#### It Even Finds Many Mislabeled Samples
+
+There're MUCH MORE mislabeled samples in the dataset. I just show a few of them here.
+
+<table>
+    <tr>
+        <td><img src="./efficientad/assets/mislabeled_1.jpg" alt="mislabeled_1" /><br /><center>Mislabeled 1</center></td>
+        <td><img src="./efficientad/assets/mislabeled_2.jpg" alt="mislabeled_2" /><br /><center>Mislabeled 2</center></td>
+    </tr>
+    <tr>
+        <td><img src="./efficientad/assets/mislabeled_3.jpg" alt="mislabeled_3" /><br /><center>Mislabeled 3</center></td>
+        <td><img src="./efficientad/assets/mislabeled_4.jpg" alt="mislabeled_4" /><br /><center>Mislabeled 4</center></td>
+    </tr>
+</table>

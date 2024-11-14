@@ -6,6 +6,7 @@ ultralytics/yolo11n.pt
 
 # EfficientAD
 efficientad/efficientad_dataset
+efficientad/output
 
 # Datasets (sensitive data)
 data/original/
