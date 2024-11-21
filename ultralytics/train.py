@@ -38,6 +38,7 @@ def train_model():
         imgsz=320,               # Image size
         batch=BATCH_SIZE,        # Batch size from argparse
         name=train_name,         # Custom run name
+        project='microorg-defect-detection',    # Wandb project
     )
 
     # Save args to the folder

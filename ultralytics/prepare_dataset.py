@@ -13,7 +13,9 @@ parser.add_argument('--coco_json', type=str, default='../data/original/annotatio
 parser.add_argument('--images_dir', type=str, default='../data/original/images', help='Path to the directory containing images')
 parser.add_argument('--yolo_dir', type=str, default='./yolo_dataset', help='Path to the YOLO dataset directory')
 parser.add_argument('--train_ratio', type=float, default=0.8, help='Percentage of data to use for training')
-parser.add_argument('--included_classes', type=str, nargs='+', default=['led', 'particle', 'flip', 'Particle_Big', 'marked', 'tilt', 'led_ng'], help='List of classes to include')
+parser.add_argument('--included_classes', type=str, nargs='+', 
+                    default=['Melosira', 'Peranema', 'Scaridium', 'Opercularia', 'Paramecium', 'Chaetonotus', 'Philodina', 'Amoeba', 'Beggiatoa', 'Colurella', 'Monostyla', 'Litonotus', 'Daphnia', 'Macrobiotus', 'Trachelophyllum', 'Spirostomum', 'Euplotes', 'Prorodontida', 'Aspidisca', 'Arcella', 'Chilodonella', 'Acineta', 'Podophrya', 'Stylonychia', 'Tokophrya', 'Aeolosoma', 'Lecane', 'Spirochaeta', 'Lepadella', 'Vorticella'], 
+                    help='List of classes to include')
 parser.add_argument('--train_as_val', action='store_true', help='Use training data as validation data')
 args = parser.parse_args()
 
@@ -185,7 +187,7 @@ def display_class_distribution(stats):
 
     class_names = [included_categories[cls]['name'] for cls in classes]
 
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(max(10, len(classes) * 0.5), 6))  # Adjust width based on number of classes
     index = np.arange(len(classes))
     bar_width = 0.35
 

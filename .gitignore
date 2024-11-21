@@ -3,6 +3,8 @@ ultralytics/runs/
 ultralytics/models/
 ultralytics/yolo_dataset/
 ultralytics/yolo11n.pt
+ultralytics/wandb/
+ultralytics/microorg-defect-detection
 
 # EfficientAD
 efficientad/efficientad_dataset
