@@ -18,6 +18,7 @@ parser.add_argument('--labeled_dir', type=str, default='original/images/', help=
 parser.add_argument('--unlabeled_dir', type=str, default='original/normal/B/', help='Path to the unlabeled (normal) image directory, including all subdirectories.')
 parser.add_argument('--output_dir', type=str, default='leddd', help='Path to the output directory.')
 parser.add_argument('--train_ratio', type=float, default=0.8, help='Ratio of training images to total images.')
+parser.add_argument('--ignore_defects', nargs='+', default=[], help='List of defect category_ids to be considered as good.')
 args = parser.parse_args()
 
 # Print the parsed arguments in a formatted manner
@@ -31,6 +32,7 @@ LABELED_DIR = args.labeled_dir
 UNLABELED_DIR = args.unlabeled_dir
 OUTPUT_DIR = args.output_dir
 TRAIN_RATIO = args.train_ratio
+IGNORE_DEFECTS = list(map(int, args.ignore_defects))
 
 #%%
 # Create defect_img_df
@@ -62,17 +64,17 @@ anonnated_img_df = pd.DataFrame(df_data)
 # Convert 'image_path' to Path objects for consistency
 anonnated_img_df['image_path'] = anonnated_img_df['image_path'].apply(lambda x: Path(x))
 
-# Create a defect_img_df, which contains images with any defects other than 1 and 5
-defect_img_df = anonnated_img_df[anonnated_img_df['defects'].apply(lambda x: any(defect not in [1, 5] for defect in x))]
+# Create a defect_img_df, which contains images with any defects not in IGNORE_DEFECTS
+defect_img_df = anonnated_img_df[anonnated_img_df['defects'].apply(lambda x: any(defect not in IGNORE_DEFECTS for defect in x))]
 
-# Create normal_defect_img_df, which contains images that have only defects 1 and/or 5
-normal_defect_img_df = anonnated_img_df[anonnated_img_df['defects'].apply(lambda x: len(x) > 0 and all(defect in [1, 5] for defect in x))]
+# Create normal_defect_img_df, which contains images that have only defects in IGNORE_DEFECTS
+normal_defect_img_df = anonnated_img_df[anonnated_img_df['defects'].apply(lambda x: len(x) > 0 and all(defect in IGNORE_DEFECTS for defect in x))]
 
-# Count the occurrence of each defect, skipping defects 1 and 5
+# Count the occurrence of each defect, skipping defects in IGNORE_DEFECTS
 defect_count = defaultdict(int)
 for defects in defect_img_df['defects']:
     for defect in defects:
-        if defect not in [1, 5]:
+        if defect not in IGNORE_DEFECTS:
             defect_count[defect] += 1
 
 #%%
@@ -168,7 +170,7 @@ for i, row in defect_img_df.iterrows():
     image_name = os.path.basename(image_path)
     defects = row['defects']
     for defect in defects:
-        if defect not in [1, 5] and defect in defect_test_dirs:
+        if defect not in IGNORE_DEFECTS and defect in defect_test_dirs:
             new_image_path = defect_test_dirs[defect] / image_name
             try:
                 shutil.copy(image_path, new_image_path)
