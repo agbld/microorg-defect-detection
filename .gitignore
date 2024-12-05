@@ -12,6 +12,7 @@ efficientad/output
 
 # Datasets (sensitive data)
 data/original/
+data/original-top10
 data/visualized/
 data/selected/
 
