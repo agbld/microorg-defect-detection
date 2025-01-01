@@ -10,8 +10,16 @@ import os
 import random
 from tqdm import tqdm
 from common import get_autoencoder, get_pdn_small, get_pdn_medium, \
-    ImageFolderWithoutTarget, InfiniteDataloader
+    ImageFolderWithoutTarget, InfiniteDataloader, ImageFolderWithPath
 from utils import predict, map_normalization, teacher_normalization, default_transform, train_transform, seed, on_gpu, out_channels, image_size
+
+# for evaluation
+from sklearn.metrics import roc_auc_score
+from PIL import Image
+from tabulate import tabulate
+import tifffile
+import matplotlib
+import csv
 
 def get_train_argparse():
     parser = argparse.ArgumentParser()
@@ -40,6 +48,8 @@ def get_train_argparse():
                             'pretraining penalty. Or see README.md to '
                             'download ImageNet and set to ImageNet path')
     parser.add_argument('-o', '--output_dir', default='output/1')
+    # parser.add_argument('--eval_epochs', nargs='+', type=int, default=[1, 5, 10, 20, 50, 100, 200, 500],
+    #                     help='List of epochs at which to evaluate the model')
     config = parser.parse_args()
     return config
 
@@ -211,6 +221,152 @@ def main():
             if iteration % 10 == 0:
                 tqdm_obj.set_description(
                     f"Epoch: {epoch + 1}/{num_epochs} - Iteration: {iteration + 1}/{len(train_loader)} - Current loss: {loss_total.item():.4f}")
+                
+            # if epoch + 1 in config.eval_epochs:
+
+            #     @torch.no_grad()
+            #     def test(test_set, teacher, student, autoencoder, teacher_mean, teacher_std,
+            #             q_st_start, q_st_end, q_ae_start, q_ae_end, test_output_dir=None,
+            #             desc='Running inference',
+            #             map_format='tiff',
+            #             threshold=80):
+            #         y_true = []
+            #         y_score = []
+            #         y_class = []
+                    
+            #         # List to store mismatch samples
+            #         mismatches = []
+
+            #         for image, target, path in tqdm(test_set, desc=desc):
+            #             orig_width = image.width
+            #             orig_height = image.height
+            #             image = default_transform(image)
+            #             image = image[None]
+            #             if on_gpu:
+            #                 image = image.cuda()
+            #             map_combined, map_st, map_ae = predict(
+            #                 image=image, teacher=teacher, student=student,
+            #                 autoencoder=autoencoder, teacher_mean=teacher_mean,
+            #                 teacher_std=teacher_std, q_st_start=q_st_start, q_st_end=q_st_end,
+            #                 q_ae_start=q_ae_start, q_ae_end=q_ae_end)
+            #             map_combined = torch.nn.functional.pad(map_combined, (4, 4, 4, 4))
+            #             map_combined = torch.nn.functional.interpolate(
+            #                 map_combined, (orig_height, orig_width), mode='bilinear')
+            #             map_combined = map_combined[0, 0].cpu().numpy()
+
+            #             # Scale anomaly map to [0, 255]
+            #             map_combined = map_combined * 255
+            #             map_combined = map_combined.astype(np.int16)
+
+            #             defect_class = os.path.basename(os.path.dirname(path))
+            #             img_nm = os.path.split(path)[1].split('.')[0]
+            #             if not os.path.exists(os.path.join(test_output_dir, defect_class)):
+            #                 os.makedirs(os.path.join(test_output_dir, defect_class))
+
+            #             if map_format == 'tiff':
+            #                 anomaly_map_path = os.path.join(test_output_dir, defect_class, img_nm + '.tiff')
+            #                 tifffile.imwrite(anomaly_map_path, map_combined)
+            #             elif map_format == 'jpg':
+            #                 original_image = Image.open(path).convert('RGB')
+            #                 gradient_softness = threshold / 3
+            #                 map_combined_normalized = (map_combined - threshold) / gradient_softness
+            #                 map_combined_normalized = 1 / (1 + np.exp(-map_combined_normalized))
+            #                 colormap = matplotlib.colormaps['jet']
+            #                 anomaly_map_image = colormap(map_combined_normalized)
+            #                 anomaly_map_image = (anomaly_map_image[:, :, :3] * 255).astype(np.uint8)
+            #                 anomaly_map_image = Image.fromarray(anomaly_map_image)
+            #                 anomaly_map_image = anomaly_map_image.resize((original_image.width, original_image.height))
+            #                 combined_image_width = original_image.width + anomaly_map_image.width
+            #                 combined_image_height = original_image.height
+            #                 combined_image = Image.new('RGB', (combined_image_width, combined_image_height))
+            #                 combined_image.paste(original_image, (0, 0))
+            #                 combined_image.paste(anomaly_map_image.convert('RGB'), (original_image.width, 0))
+            #                 combined_image_path = os.path.join(test_output_dir, defect_class, img_nm + '.jpg')
+            #                 combined_image.save(combined_image_path)
+            #             else:
+            #                 raise ValueError("Invalid map format specified. Use 'tiff' or 'jpg'.")
+
+            #             y_true_image = 0 if defect_class == 'good' else 1
+            #             y_score_image = np.max(map_combined)
+            #             y_true.append(y_true_image)
+            #             y_score.append(y_score_image)
+            #             y_class.append(defect_class)
+
+            #             # Collect mismatch samples (where prediction does not match ground truth)
+            #             if (y_true_image == 0 and y_score_image > threshold) or (y_true_image == 1 and y_score_image <= threshold):
+            #                 mismatches.append([defect_class, img_nm, y_score_image])
+
+            #         # Calculate metrics for each defect class
+            #         defect_classes = set(y_class)
+            #         class_metrics = []
+            #         for defect_class in defect_classes:
+            #             class_indices = [i for i, cls in enumerate(y_class) if cls == defect_class]
+            #             y_true_class = [y_true[i] for i in class_indices]
+            #             y_score_class = [y_score[i] for i in class_indices]
+                        
+            #             accuracy_class = np.mean(np.array(y_true_class) == (np.array(y_score_class) > threshold))
+
+            #             if defect_class == 'good':
+            #                 precision_class = np.sum((np.array(y_true_class) == 0) & (np.array(y_score_class) <= threshold)) / np.sum(np.array(y_score_class) <= threshold)
+            #                 recall_class = np.sum((np.array(y_true_class) == 0) & (np.array(y_score_class) <= threshold)) / np.sum(np.array(y_true_class) == 0)
+            #             else:
+            #                 precision_class = np.sum((np.array(y_true_class) == 1) & (np.array(y_score_class) > threshold)) / np.sum(np.array(y_score_class) > threshold)
+            #                 recall_class = np.sum((np.array(y_true_class) == 1) & (np.array(y_score_class) > threshold)) / np.sum(np.array(y_true_class) == 1)
+
+            #             num_samples_class = len(y_true_class)
+                        
+            #             class_metrics.append([defect_class, accuracy_class, precision_class, recall_class, num_samples_class])
+                    
+            #         # Print class metrics as a table
+            #         headers = ["Class", "Accuracy", "Precision", "Recall", "Num Samples"]
+            #         class_metrics.sort(key=lambda x: x[0])  # Sort by Class
+            #         print()
+            #         print(tabulate(class_metrics, headers=headers, floatfmt=".4f"))
+
+            #         # Calculate overall metrics
+            #         accuracy = np.mean(np.array(y_true) == (np.array(y_score) > threshold))
+            #         precision = np.sum((np.array(y_true) == 1) & (np.array(y_score) > threshold)) / np.sum(np.array(y_score) > threshold)
+            #         recall = np.sum((np.array(y_true) == 1) & (np.array(y_score) > threshold)) / np.sum(np.array(y_true) == 1)
+            #         num_samples = len(y_true)
+                    
+            #         # Print overall metrics as a table
+            #         overall_metrics = [["Overall", accuracy, precision, recall, num_samples]]
+            #         print()
+            #         print(tabulate(overall_metrics, headers=headers, floatfmt=".4f"))
+
+            #         auc = roc_auc_score(y_true=y_true, y_score=y_score)
+                    
+            #         # Export mismatches to a CSV file
+            #         mismatch_csv_path = os.path.join(test_output_dir, 'mismatch_samples.csv')
+            #         with open(mismatch_csv_path, mode='w', newline='') as file:
+            #             writer = csv.writer(file)
+            #             writer.writerow(['defect_class', 'image_name', 'y_score'])  # Write headers
+            #             writer.writerows(mismatches)  # Write mismatch samples
+
+            #         return auc * 100
+                
+            #     # Compute map normalization parameters
+            #     q_st_start, q_st_end, q_ae_start, q_ae_end = map_normalization(
+            #         validation_loader=validation_loader, teacher=teacher, student=student,
+            #         autoencoder=autoencoder, teacher_mean=teacher_mean,
+            #         teacher_std=teacher_std, desc='Final map normalization')
+                
+            #     # eval config
+            #     test_set = ImageFolderWithPath(os.path.join(dataset_path, 'test'))
+            #     test_output_dir = os.path.join(train_output_dir, f'epoch_{epoch + 1}')
+            #     threshold = 15
+
+            #     # Run evaluation
+            #     auc = test(
+            #         test_set=test_set,
+            #         teacher=teacher, student=student,
+            #         autoencoder=autoencoder, teacher_mean=teacher_mean,
+            #         teacher_std=teacher_std, q_st_start=q_st_start, q_st_end=q_st_end,
+            #         q_ae_start=q_ae_start, q_ae_end=q_ae_end,
+            #         test_output_dir=test_output_dir, desc='evaluating',
+            #         map_format='jpg',
+            #         threshold=threshold)
+            #     print(f'Final image AUC: {auc:.4f}')
 
         # Save models periodically
         if epoch % 10 == 0 and epoch > 0:
